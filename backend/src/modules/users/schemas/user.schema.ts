@@ -14,7 +14,6 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  // Add more fields as needed
   @Prop({ default: 'user' })
   role: string;
 }
