@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export interface LoginCredentials {
   email: string;
@@ -33,8 +33,8 @@ const authService = {
 
   async logout(): Promise<void> {
     // Clear local storage, cookies, etc.
-    localStorage.removeItem('token');
-  }
+    localStorage.removeItem("token");
+  },
 };
 
 export default authService;
