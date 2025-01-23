@@ -1,28 +1,36 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useDispatch } from 'react-redux';
+import authService from '@/services/auth';
+import { loginStart, loginSuccess, loginFailure } from '@/store/slices/authSlice';
 
 export default function LoginForm() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    dispatch(loginStart());
 
     try {
-      // API call will go here
-      console.log("Login attempt:", formData);
-      // Redirect to dashboard on success
-      router.push("/dashboard");
-    } catch (err) {
-      setError("Failed to login. Please check your credentials.");
+      const response = await authService.login(formData);
+      dispatch(loginSuccess({
+        user: response.user,
+        token: response.token
+      }));
+      router.push('/dashboard');
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || 'Login failed';
+      setError(errorMsg);
+      dispatch(loginFailure(errorMsg));
     } finally {
       setLoading(false);
     }
