@@ -5,6 +5,14 @@ import { useDispatch } from 'react-redux';
 import authService from '@/services/auth';
 import { loginStart, loginSuccess, loginFailure } from '@/store/slices/authSlice';
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -27,8 +35,9 @@ export default function LoginForm() {
         token: response.token
       }));
       router.push('/dashboard');
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Login failed';
+    } catch (err: unknown) {
+      const error = err as ApiError;
+      const errorMsg = error.response?.data?.message || 'Login failed';
       setError(errorMsg);
       dispatch(loginFailure(errorMsg));
     } finally {
@@ -41,7 +50,7 @@ export default function LoginForm() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to SmartStack
+            Sign in to SmartStack.Ai
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -92,7 +101,7 @@ export default function LoginForm() {
               href="/register"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Don't have an account? Register
+              Don&apos;t have an account? Register
             </Link>
           </div>
         </form>

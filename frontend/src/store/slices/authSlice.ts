@@ -34,6 +34,7 @@ export const verifyToken = createAsyncThunk(
       
       return rejectWithValue('Token verification failed');
     } catch (error) {
+      console.error('Token verification failed', error);
       return rejectWithValue('Token verification failed');
     }
   }

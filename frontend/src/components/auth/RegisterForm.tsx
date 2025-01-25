@@ -27,8 +27,8 @@ export default function RegisterForm() {
         token: response.token
       }));
       router.push('/login');
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.message || 'Registration failed';
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : 'Registration failed';
       setError(errorMsg);
       dispatch(loginFailure(errorMsg));
     } finally {
@@ -41,7 +41,7 @@ export default function RegisterForm() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Register for SmartStack
+            Register for SmartStack.Ai
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

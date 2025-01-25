@@ -1,14 +1,14 @@
 import ProtectedRoute from '../components/shared/ProtectedRoute';
-import Dashboard from '../components/dashboard/Dashboard';
+import TaskList from '../components/tasks/TaskList';
 import DashboardLayout from '../components/dashboardLayout/DashboardLayout';
-const DashboardPage = () => {
+const Tasks = () => {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <Dashboard />
+        <TaskList />
       </DashboardLayout>
     </ProtectedRoute>
   );
 };
 
-export default DashboardPage;
+export default Tasks;

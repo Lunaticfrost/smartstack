@@ -66,7 +66,7 @@ const authService = {
       });
       
       return response.data;
-    } catch (error) {
+    } catch {
       // Token is invalid or expired
       this.logout();
       return null;
