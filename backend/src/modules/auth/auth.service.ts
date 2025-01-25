@@ -11,6 +11,7 @@ import {
   RegisterDto,
   ResetPasswordDto,
 } from './dto/auth.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -115,5 +116,16 @@ export class AuthService {
       sub: user._id,
       email: user.email,
     });
+  }
+
+  async verify(req: Request) {
+    // Get token from request headers
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+      throw new UnauthorizedException('No token provided');
+    }
+    
+    // Verify the token and return user info
+    return this.jwtService.verify(token);
   }
 }
