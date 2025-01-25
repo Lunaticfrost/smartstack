@@ -1,5 +1,12 @@
-import React from 'react';
+import ProtectedRoute from '../components/shared/ProtectedRoute';
+import Dashboard from '../components/dashboard/Dashboard';
 
-export default function Dashboard() {
-  return <div>Dashboard</div>;
-}
+const DashboardPage = () => {
+  return (
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  );
+};
+
+export default DashboardPage;
