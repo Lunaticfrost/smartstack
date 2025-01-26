@@ -1,48 +1,38 @@
-import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-
-export type TaskDocument = Task & Document;
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { TaskPriority, TaskStatus } from '../dto/create-task.dto';
 
 @Schema({ timestamps: true })
-export class Task {
+export class Task extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
-  description: string;
+  @Prop()
+  description?: string;
 
-  @Prop({ required: true })
-  status: string;
+  @Prop({ enum: TaskPriority, required: true })
+  priority: TaskPriority;
 
-  @Prop({ required: true })
-  priority: string;
+  @Prop({ enum: TaskStatus, required: true })
+  status: TaskStatus;
 
-  @Prop({ required: true })
-  assignee: Types.ObjectId;
+  @Prop()
+  dueDate?: Date;
 
-  @Prop({ required: true })
-  project: Types.ObjectId;
+  @Prop()
+  timeEstimate?: number;
 
-  @Prop({ required: true })
-  dueDate: Date;
+  @Prop()
+  timeSpent?: number;
 
-  @Prop({ required: true })
-  timeEstimate: number;
+  @Prop({ type: String, ref: 'User', required: true })
+  assigneeId: string;
 
-  @Prop({ required: true })
-  timeSpent: number;
+  @Prop({ type: String, ref: 'Project' })
+  projectId?: string;
 
-  @Prop({ type: [Types.ObjectId], default: [] })
-  labels: Types.ObjectId[];
-
-  @Prop({ required: true })
-  createdBy: Types.ObjectId;
-
-  @Prop({ type: Date, default: Date.now })
-  createdAt: Date;
-
-  @Prop({ type: Date, default: Date.now })
-  updatedAt: Date;
+  @Prop({ type: String, ref: 'User', required: true })
+  createdBy: string;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
