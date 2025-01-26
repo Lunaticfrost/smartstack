@@ -5,6 +5,7 @@ import { RootState } from '../../store';
 import { createTask, updateTask } from '../../store/slices/taskSlice';
 import { X, Plus } from 'lucide-react';
 import { Task } from '../../services/taskService';
+import userService, { User } from '@/services/userService';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -15,13 +16,24 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentTask = useSelector((state: RootState) => state.tasks.currentTask);
 
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      const data = await userService.getUsers();
+      setUsers(data);
+      console.log("users", data);
+    };
+    loadUsers();
+  }, []);
+
   const [formData, setFormData] = useState<Omit<Task, 'id'>>({
     title: '',
     description: '',
     status: 'Todo' as Task['status'],
     priority: 'Medium' as Task['priority'],
     dueDate: undefined,
-    assignee: '',
+    assigneeId: '',
     labels: []
   });
 
@@ -35,7 +47,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
         status: currentTask.status || 'Todo',
         priority: currentTask.priority || 'Medium',
         dueDate: currentTask.dueDate || undefined,
-        assignee: currentTask.assignee || '',
+        assigneeId: currentTask.assigneeId || '',
         labels: currentTask.labels || []
       });
     } else {
@@ -45,7 +57,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
         status: 'Todo' as Task['status'],
         priority: 'Medium' as Task['priority'],
         dueDate: undefined,
-        assignee: '',
+        assigneeId: '',
         labels: []
       });
     }
@@ -158,6 +170,25 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
               "
               placeholder="Enter task description"
             />
+          </div>
+
+          {/* Assignee */}
+          <div>
+            <label htmlFor="assigneeId" className="block text-sm font-medium text-gray-700 pl-2">
+              Assignee
+            </label>
+            <select
+              id="assigneeId"
+              name="assigneeId"
+              value={formData.assigneeId}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-2 h-7"
+            >
+              <option value="">Select an assignee</option>
+              {users.map((user: User) => (
+                <option key={user._id} value={user._id}>{user.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Status and Priority */}

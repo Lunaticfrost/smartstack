@@ -1,3 +1,6 @@
+import axios from "axios";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
 export interface Task {
   id?: string;
   title: string;
@@ -5,7 +8,7 @@ export interface Task {
   status: 'Todo' | 'In Progress' | 'Review' | 'Done';
   priority: 'Low' | 'Medium' | 'High' | 'Urgent';
   dueDate?: Date;
-  assignee: string;
+  assigneeId: string;
   labels: string[];
 }
 
@@ -25,7 +28,17 @@ const taskService = {
   },
 
   async createTask(taskData: Task) {
-    return taskData;
+    console.log(taskData);
+    console.log("API_URL", API_URL);
+    //Add the token to the request
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/tasks`, taskData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    console.log(response.data);
+    return response.data;
   },
 
   async updateTask(id: string, taskData: Partial<Task>) {
