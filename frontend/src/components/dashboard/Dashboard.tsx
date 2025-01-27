@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   LineChart, 
   Line, 
@@ -16,6 +16,11 @@ import {
   Users,
   PieChart
 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import type { AppDispatch } from '@/store';
+import { fetchTasks, setCurrentTask } from '@/store/slices/taskSlice';
+import TaskModal from '../tasks/TaskModal';
 
 // Mock data - replace with actual API calls
 const taskData = [
@@ -28,13 +33,25 @@ const taskData = [
 ];
 
 const Dashboard: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const tasks = useSelector((state: RootState) => state.tasks.tasks);
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(fetchTasks());
+    }, [dispatch]);
+
+    console.log("tasks", tasks);
+
+    const overdueTasks = tasks.filter(task => task.dueDate && new Date(task.dueDate) < new Date());
+
   return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-gray-500 text-sm">Total Tasks</h3>
-              <p className="text-2xl font-bold text-indigo-600">124</p>
+              <p className="text-2xl font-bold text-indigo-600">{tasks.length}</p>
             </div>
             <CheckSquare className="text-indigo-500 w-8 h-8" />
           </div>
@@ -64,7 +81,7 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-gray-500 text-sm">Overdue Tasks</h3>
-              <p className="text-2xl font-bold text-red-600">12</p>
+              <p className="text-2xl font-bold text-red-600">{overdueTasks.length}</p>
             </div>
             <AlertTriangle className="text-red-500 w-8 h-8" />
           </div>
@@ -93,12 +110,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Recent Tasks</h2>
           <ul className="space-y-3">
-            {[
-              { title: 'Implement Dashboard', status: 'In Progress' },
-              { title: 'Design New Feature', status: 'Pending' },
-              { title: 'Code Review', status: 'Completed' },
-              { title: 'Team Meeting', status: 'Scheduled' }
-            ].map((task, index) => (
+            {tasks.map((task, index) => (
               <li 
                 key={index} 
                 className="flex justify-between items-center border-b pb-2 last:border-b-0"
@@ -131,6 +143,11 @@ const Dashboard: React.FC = () => {
                 p-3 rounded-lg 
                 flex flex-col items-center justify-center
               "
+              onClick={() => {
+                dispatch(setCurrentTask(null));
+                setIsModalOpen(true);
+
+              }}
             >
               <CheckSquare className="w-6 h-6 mb-2" />
               <span className="text-sm">New Task</span>
@@ -170,6 +187,14 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Task Modal */}
+        {isModalOpen && (
+          <TaskModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+          />
+        )}
       </div>
   );
 };

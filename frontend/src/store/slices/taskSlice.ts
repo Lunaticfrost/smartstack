@@ -26,7 +26,7 @@ export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async (filters: Partial<TaskState['filters']> | undefined, { rejectWithValue }) => {
     try {
-      return await taskService.getTasks(filters);
+      return await taskService.getTasks();
     } catch (error) {
       console.error('Failed to fetch tasks', error);
       return rejectWithValue('Failed to fetch tasks');
@@ -108,7 +108,7 @@ const tasksSlice = createSlice({
 
     // Update Task
     builder.addCase(updateTask.fulfilled, (state, action) => {
-      const index = state.tasks.findIndex(task => task.id === action.payload.id);
+      const index = state.tasks.findIndex(task => task._id === action.payload._id);
       if (index !== -1) {
         state.tasks[index] = action.payload;
       }
@@ -117,7 +117,7 @@ const tasksSlice = createSlice({
 
     // Delete Task
     builder.addCase(deleteTask.fulfilled, (state, action) => {
-      state.tasks = state.tasks.filter(task => task.id !== action.payload);
+      state.tasks = state.tasks.filter(task => task._id !== action.payload);
     });
   }
 });

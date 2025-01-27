@@ -135,6 +135,7 @@ const TasksPage: React.FC = () => {
                 <thead>
                   <tr className="bg-gray-100 text-gray-600 uppercase text-sm">
                     <th className="p-3 text-left">Title</th>
+                    <th className="p-3 text-left">Assignee</th>
                     <th className="p-3 text-left">Status</th>
                     <th className="p-3 text-left">Priority</th>
                     <th className="p-3 text-left">Due Date</th>
@@ -143,8 +144,9 @@ const TasksPage: React.FC = () => {
                 </thead>
                 <tbody>
                   {filteredTasks.map((task) => (
-                    <tr key={task.id} className="border-b hover:bg-gray-50">
+                    <tr key={task._id} className="border-b hover:bg-gray-50">
                       <td className="p-3">{task.title}</td>
+                      <td className="p-3">{task.assigneeId.name}</td>
                       <td className="p-3">
                         <span 
                           className={`
@@ -183,7 +185,7 @@ const TasksPage: React.FC = () => {
                             <Edit className="w-5 h-5" />
                           </button>
                           <button 
-                            onClick={() => handleDeleteTask(task.id)}
+                            onClick={() => handleDeleteTask(task._id)}
                             className="text-red-600 hover:text-red-800"
                           >
                             <Trash2 className="w-5 h-5" />

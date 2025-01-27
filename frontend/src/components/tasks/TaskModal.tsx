@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import { RootState } from '../../store';
-import { createTask, updateTask } from '../../store/slices/taskSlice';
+import { createTask, fetchTasks, updateTask } from '../../store/slices/taskSlice';
 import { X, Plus } from 'lucide-react';
 import { Task } from '../../services/taskService';
 import userService, { User } from '@/services/userService';
@@ -97,10 +97,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
       dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined
     };
 
-    if (currentTask && currentTask.id) {
+    if (currentTask && currentTask._id) {
       // Update existing task
       dispatch(updateTask({ 
-        id: currentTask.id, 
+        id: currentTask._id, 
         taskData 
       }));
     } else {
@@ -109,6 +109,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
     }
 
     onClose();
+    dispatch(fetchTasks());
   };
 
   if (!isOpen) return null;
@@ -249,7 +250,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
                 type="date"
                 id="dueDate"
                 name="dueDate"
-                value={formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : ''}
+                value={formData.dueDate ? new Date(formData.dueDate).toISOString().split('T')[0] : ''}
                 onChange={handleChange}
                 className="
                   mt-1 block w-full rounded-md border-gray-300 

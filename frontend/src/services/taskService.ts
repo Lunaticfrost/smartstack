@@ -2,7 +2,7 @@ import axios from "axios";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export interface Task {
-  id?: string;
+  _id?: string;
   title: string;
   description: string;
   status: 'Todo' | 'In Progress' | 'Review' | 'Done';
@@ -13,18 +13,14 @@ export interface Task {
 }
 
 const taskService = {
-  async getTasks(filters?: Partial<{ status: string; priority: string; search: string }>) {
-    const mockTasks: Task[] = [];
-    if (filters?.status) {
-      // Filter by status
-    }
-    if (filters?.priority) {
-      // Filter by priority
-    }
-    if (filters?.search) {
-      // Filter by search term
-    }
-    return mockTasks;
+  async getTasks() {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/tasks`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
   },
 
   async createTask(taskData: Task) {
@@ -42,11 +38,23 @@ const taskService = {
   },
 
   async updateTask(id: string, taskData: Partial<Task>) {
-    return { id, ...taskData } as Task;
+    const token = localStorage.getItem('token');
+    const response = await axios.put(`${API_URL}/tasks/${id}`, taskData, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
   },
 
   async deleteTask(id: string) {
-    return id;
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`${API_URL}/tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
   }
 };
 
