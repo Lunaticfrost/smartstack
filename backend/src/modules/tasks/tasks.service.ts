@@ -21,12 +21,13 @@ export class TasksService {
   }
 
   async getAllTasks(userId: string): Promise<Task[]> {
-    return this.taskModel.find({ 
+    const tasks = await this.taskModel.find({ 
       $or: [
         { createdBy: userId },
         { assigneeId: userId }
       ]
-    });
+    }).populate('assigneeId');
+    return tasks;
   }
 
   async getTaskById(taskId: string, userId: string): Promise<Task> {
