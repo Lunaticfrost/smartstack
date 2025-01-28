@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type ProjectDocument = Project & Document;
+export type TeamDocument = Team & Document;
 
 @Schema({ timestamps: true })
-export class Project {
+export class Team {
   @Prop({ required: true })
   name: string;
 
@@ -12,19 +12,13 @@ export class Project {
   description: string;
 
   @Prop({ required: true })
-  team: Types.ObjectId;
+  members: Types.ObjectId[];
 
   @Prop({ required: true })
   status: string;
 
   @Prop({ required: true })
-  tasks: Types.ObjectId[];
-
-  @Prop({ required: true })
-  startDate: Date;
-
-  @Prop({ required: true })
-  endDate: Date;
+  projects: Types.ObjectId[];
 
   @Prop({ required: true })
   createdBy: Types.ObjectId;
@@ -36,4 +30,4 @@ export class Project {
   updatedAt: Date;
 }
 
-export const ProjectSchema = SchemaFactory.createForClass(Project);
+export const TeamSchema = SchemaFactory.createForClass(Team);
