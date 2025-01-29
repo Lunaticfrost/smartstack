@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, Clock, Layout, Users, CheckSquare, PieChart } from 'lucide-react';
+import { BarChart, Clock, Layout, Users, CheckSquare, PieChart, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
@@ -31,6 +31,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       name: 'Tasks', 
       icon: <CheckSquare className="w-5 h-5" />, 
       href: '/dashboard/tasks' 
+    },
+    { 
+      name: 'Projects', 
+      icon: <Briefcase className="w-5 h-5" />, 
+      href: '/dashboard/projects' 
     },
     { 
       name: 'Time Tracking', 
