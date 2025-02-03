@@ -13,7 +13,7 @@ import ProjectModal from './ProjectModal';
 
 const ProjectManagement: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { projects, loading, error } = useSelector((state: RootState) => state.projects);
+  const { projects, loading } = useSelector((state: RootState) => state.projects);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
