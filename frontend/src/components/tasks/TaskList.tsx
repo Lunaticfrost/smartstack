@@ -1,28 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch } from '../../store';
-import { 
-  fetchTasks, 
-  setCurrentTask, 
-  deleteTask, 
-  setFilters 
-} from '../../store/slices/taskSlice';
-import { RootState } from '../../store';
-import DashboardLayout from '../dashboardLayout/DashboardLayout';
-import { 
-  Plus,  
-  Search, 
-  Edit, 
-  Trash2 
-} from 'lucide-react';
-import TaskModal from './TaskModal';
-import { Task } from '../../services/taskService';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../../store";
+import {
+  fetchTasks,
+  setCurrentTask,
+  deleteTask,
+  setFilters,
+} from "../../store/slices/taskSlice";
+import { RootState } from "../../store";
+import DashboardLayout from "../dashboardLayout/DashboardLayout";
+import { Plus, Search, Edit, Trash2 } from "lucide-react";
+import TaskModal from "./TaskModal";
+import { Task } from "../../services/taskService";
 
 const TasksPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { tasks, loading, filters } = useSelector((state: RootState) => state.tasks);
+  const { tasks, loading, filters } = useSelector(
+    (state: RootState) => state.tasks
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(fetchTasks());
@@ -39,7 +36,7 @@ const TasksPage: React.FC = () => {
   };
 
   const handleDeleteTask = (id: string | undefined) => {
-    if (id && window.confirm('Are you sure you want to delete this task?')) {
+    if (id && window.confirm("Are you sure you want to delete this task?")) {
       dispatch(deleteTask(id));
     }
   };
@@ -48,10 +45,11 @@ const TasksPage: React.FC = () => {
     dispatch(setFilters({ [filterType]: value }));
   };
 
-  const filteredTasks = tasks.filter(task => 
-    task.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (!filters.status || task.status === filters.status) &&
-    (!filters.priority || task.priority === filters.priority)
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (!filters.status || task.status === filters.status) &&
+      (!filters.priority || task.priority === filters.priority)
   );
 
   return (
@@ -65,7 +63,7 @@ const TasksPage: React.FC = () => {
           <>
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-gray-800">Tasks</h1>
-              <button 
+              <button
                 onClick={handleCreateTask}
                 className="
                   flex items-center 
@@ -82,7 +80,7 @@ const TasksPage: React.FC = () => {
             {/* Filters and Search */}
             <div className="flex space-x-4 mb-6">
               <div className="relative flex-grow">
-                <input 
+                <input
                   type="text"
                   placeholder="Search tasks..."
                   value={searchTerm}
@@ -97,8 +95,8 @@ const TasksPage: React.FC = () => {
               </div>
 
               {/* Status Filter */}
-              <select 
-                onChange={(e) => handleFilterChange('status', e.target.value)}
+              <select
+                onChange={(e) => handleFilterChange("status", e.target.value)}
                 className="
                   px-4 py-2 
                   border rounded-md 
@@ -113,8 +111,8 @@ const TasksPage: React.FC = () => {
               </select>
 
               {/* Priority Filter */}
-              <select 
-                onChange={(e) => handleFilterChange('priority', e.target.value)}
+              <select
+                onChange={(e) => handleFilterChange("priority", e.target.value)}
                 className="
                   px-4 py-2 
                   border rounded-md 
@@ -148,43 +146,55 @@ const TasksPage: React.FC = () => {
                       <td className="p-3">{task.title}</td>
                       <td className="p-3">{task.assigneeId.name}</td>
                       <td className="p-3">
-                        <span 
+                        <span
                           className={`
                             px-3 py-1 rounded-full text-xs
-                            ${task.status === 'Done' ? 'bg-green-100 text-green-800' : 
-                              task.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 
-                              task.status === 'Review' ? 'bg-yellow-100 text-yellow-800' : 
-                              'bg-gray-100 text-gray-800'}
+                            ${
+                              task.status === "Done"
+                                ? "bg-green-100 text-green-800"
+                                : task.status === "In Progress"
+                                ? "bg-blue-100 text-blue-800"
+                                : task.status === "Review"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-800"
+                            }
                           `}
                         >
                           {task.status}
                         </span>
                       </td>
                       <td className="p-3">
-                        <span 
+                        <span
                           className={`
                             px-3 py-1 rounded-full text-xs
-                            ${task.priority === 'Urgent' ? 'bg-red-100 text-red-800' : 
-                              task.priority === 'High' ? 'bg-orange-100 text-orange-800' : 
-                              task.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' : 
-                              'bg-green-100 text-green-800'}
+                            ${
+                              task.priority === "Urgent"
+                                ? "bg-red-100 text-red-800"
+                                : task.priority === "High"
+                                ? "bg-orange-100 text-orange-800"
+                                : task.priority === "Medium"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-green-100 text-green-800"
+                            }
                           `}
                         >
                           {task.priority}
                         </span>
                       </td>
                       <td className="p-3">
-                        {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}
+                        {task.dueDate
+                          ? new Date(task.dueDate).toLocaleDateString()
+                          : "No due date"}
                       </td>
                       <td className="p-3 text-right">
                         <div className="flex justify-end space-x-2">
-                          <button 
+                          <button
                             onClick={() => handleEditTask(task)}
                             className="text-blue-600 hover:text-blue-800"
                           >
                             <Edit className="w-5 h-5" />
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleDeleteTask(task._id)}
                             className="text-red-600 hover:text-red-800"
                           >
@@ -210,10 +220,7 @@ const TasksPage: React.FC = () => {
 
       {/* Task Modal */}
       {isModalOpen && (
-        <TaskModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-        />
+        <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       )}
     </DashboardLayout>
   );

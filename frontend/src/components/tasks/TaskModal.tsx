@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch } from '../../store';
-import { RootState } from '../../store';
-import { createTask, fetchTasks, updateTask } from '../../store/slices/taskSlice';
-import { X, Plus } from 'lucide-react';
-import { Task } from '../../services/taskService';
-import userService, { User } from '@/services/userService';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../../store";
+import { RootState } from "../../store";
+import {
+  createTask,
+  fetchTasks,
+  updateTask,
+} from "../../store/slices/taskSlice";
+import { X, Plus } from "lucide-react";
+import { Task } from "../../services/taskService";
+import userService, { User } from "@/services/userService";
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -14,7 +18,9 @@ interface TaskModalProps {
 
 const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const currentTask = useSelector((state: RootState) => state.tasks.currentTask);
+  const currentTask = useSelector(
+    (state: RootState) => state.tasks.currentTask
+  );
 
   const [users, setUsers] = useState<User[]>([]);
 
@@ -27,82 +33,91 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
     loadUsers();
   }, []);
 
-  const [formData, setFormData] = useState<Omit<Task, 'id'>>({
-    title: '',
-    description: '',
-    status: 'Todo' as Task['status'],
-    priority: 'Medium' as Task['priority'],
+  const [formData, setFormData] = useState<Omit<Task, "id">>({
+    title: "",
+    description: "",
+    status: "Todo" as Task["status"],
+    priority: "Medium" as Task["priority"],
     dueDate: undefined,
-    assigneeId: '',
-    labels: []
+    assigneeId: "",
+    labels: [],
   });
 
-  const [newLabel, setNewLabel] = useState('');
+  const [newLabel, setNewLabel] = useState("");
 
   useEffect(() => {
     if (currentTask) {
       setFormData({
-        title: currentTask.title || '',
-        description: currentTask.description || '',
-        status: currentTask.status || 'Todo',
-        priority: currentTask.priority || 'Medium',
+        title: currentTask.title || "",
+        description: currentTask.description || "",
+        status: currentTask.status || "Todo",
+        priority: currentTask.priority || "Medium",
         dueDate: currentTask.dueDate || undefined,
-        assigneeId: currentTask.assigneeId || '',
-        labels: currentTask.labels || []
+        assigneeId: currentTask.assigneeId || "",
+        labels: currentTask.labels || [],
       });
     } else {
       setFormData({
-        title: '',
-        description: '',
-        status: 'Todo' as Task['status'],
-        priority: 'Medium' as Task['priority'],
+        title: "",
+        description: "",
+        status: "Todo" as Task["status"],
+        priority: "Medium" as Task["priority"],
         dueDate: undefined,
-        assigneeId: '',
-        labels: []
+        assigneeId: "",
+        labels: [],
       });
     }
   }, [currentTask]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = e.target;
-    if (name === 'dueDate') {
-      setFormData(prev => ({ ...prev, [name]: value ? new Date(value) : undefined }));
+    if (name === "dueDate") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value ? new Date(value) : undefined,
+      }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleAddLabel = () => {
     if (newLabel.trim() && !formData.labels.includes(newLabel.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        labels: [...prev.labels, newLabel.trim()]
+        labels: [...prev.labels, newLabel.trim()],
       }));
-      setNewLabel('');
+      setNewLabel("");
     }
   };
 
   const handleRemoveLabel = (label: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      labels: prev.labels.filter(l => l !== label)
+      labels: prev.labels.filter((l) => l !== label),
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const taskData = {
       ...formData,
-      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined
+      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     };
 
     if (currentTask && currentTask._id) {
       // Update existing task
-      dispatch(updateTask({ 
-        id: currentTask._id, 
-        taskData 
-      }));
+      dispatch(
+        updateTask({
+          id: currentTask._id,
+          taskData,
+        })
+      );
     } else {
       // Create new task
       dispatch(createTask(taskData));
@@ -120,9 +135,9 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
         {/* Modal Header */}
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-2xl font-bold">
-            {currentTask ? 'Edit Task' : 'Create New Task'}
+            {currentTask ? "Edit Task" : "Create New Task"}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="text-gray-600 hover:text-gray-900"
           >
@@ -134,7 +149,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Title Input */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 pl-2">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700 pl-2"
+            >
               Task Title
             </label>
             <input
@@ -155,7 +173,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
 
           {/* Description Input */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 pl-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 pl-2"
+            >
               Description
             </label>
             <textarea
@@ -175,7 +196,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
 
           {/* Assignee */}
           <div>
-            <label htmlFor="assigneeId" className="block text-sm font-medium text-gray-700 pl-2">
+            <label
+              htmlFor="assigneeId"
+              className="block text-sm font-medium text-gray-700 pl-2"
+            >
               Assignee
             </label>
             <select
@@ -187,7 +211,9 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
             >
               <option value="">Select an assignee</option>
               {users.map((user: User) => (
-                <option key={user._id} value={user._id}>{user.name}</option>
+                <option key={user._id} value={user._id}>
+                  {user.name}
+                </option>
               ))}
             </select>
           </div>
@@ -195,7 +221,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
           {/* Status and Priority */}
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700 pl-2">
+              <label
+                htmlFor="status"
+                className="block text-sm font-medium text-gray-700 pl-2"
+              >
                 Status
               </label>
               <select
@@ -217,7 +246,10 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div>
-              <label htmlFor="priority" className="block text-sm font-medium text-gray-700 pl-2">
+              <label
+                htmlFor="priority"
+                className="block text-sm font-medium text-gray-700 pl-2"
+              >
                 Priority
               </label>
               <select
@@ -241,16 +273,23 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
 
           {/* Due Date */}
           <div>
-            <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 pl-2">
+            <label
+              htmlFor="dueDate"
+              className="block text-sm font-medium text-gray-700 pl-2"
+            >
               Due Date
             </label>
             <div className="relative">
-            {/* <Calendar className="absolute left-3 top-3 text-gray-400" /> */}
+              {/* <Calendar className="absolute left-3 top-3 text-gray-400" /> */}
               <input
                 type="date"
                 id="dueDate"
                 name="dueDate"
-                value={formData.dueDate ? new Date(formData.dueDate).toISOString().split('T')[0] : ''}
+                value={
+                  formData.dueDate
+                    ? new Date(formData.dueDate).toISOString().split("T")[0]
+                    : ""
+                }
                 onChange={handleChange}
                 className="
                   mt-1 block w-full rounded-md border-gray-300 
@@ -258,7 +297,6 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
                   sm:text-sm pl-10 pl-2 h-7
                 "
               />
-              
             </div>
           </div>
 
@@ -290,12 +328,12 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
                 <Plus className="w-5 h-5" />
               </button>
             </div>
-            
+
             {/* Existing Labels */}
             <div className="mt-2 flex flex-wrap gap-2">
               {formData.labels.map((label) => (
-                <span 
-                  key={label} 
+                <span
+                  key={label}
                   className="
                     inline-flex items-center 
                     bg-indigo-100 text-indigo-800 
@@ -304,7 +342,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
                   "
                 >
                   {label}
-                  <button 
+                  <button
                     type="button"
                     onClick={() => handleRemoveLabel(label)}
                     className="ml-2 text-indigo-500 hover:text-indigo-700"
@@ -337,7 +375,7 @@ const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose }) => {
                 text-white bg-indigo-600 hover:bg-indigo-700
               "
             >
-              {currentTask ? 'Update Task' : 'Create Task'}
+              {currentTask ? "Update Task" : "Create Task"}
             </button>
           </div>
         </form>
