@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch } from '@/store';
-import { RootState } from '@/store';
-import { fetchTeams, deleteTeam, Team } from '@/store/slices/teamSlice';
-import { Plus, Edit2, Trash2, Search, Users } from 'lucide-react';
-import TeamModal from './TeamModal';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "@/store";
+import { RootState } from "@/store";
+import { fetchTeams, deleteTeam, Team } from "@/store/slices/teamSlice";
+import { Plus, Edit2, Trash2, Search, Users } from "lucide-react";
+import TeamModal from "./TeamModal";
 
 const TeamManagement: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { teams, loading, error } = useSelector((state: RootState) => state.teams);
+  const { teams, loading } = useSelector(
+    (state: RootState) => state.teams
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     dispatch(fetchTeams());
@@ -28,16 +30,16 @@ const TeamManagement: React.FC = () => {
   };
 
   const handleDeleteTeam = async (teamId: string) => {
-    if (window.confirm('Are you sure you want to delete this team?')) {
+    if (window.confirm("Are you sure you want to delete this team?")) {
       try {
         await dispatch(deleteTeam(teamId)).unwrap();
       } catch (error) {
-        console.error('Failed to delete team:', error);
+        console.error("Failed to delete team:", error);
       }
     }
   };
 
-  const filteredTeams = teams?.filter(team => 
+  const filteredTeams = teams?.filter((team) =>
     team.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -51,7 +53,7 @@ const TeamManagement: React.FC = () => {
         <>
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Teams</h1>
-            <button 
+            <button
               onClick={handleCreateTeam}
               className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300"
             >
@@ -61,7 +63,7 @@ const TeamManagement: React.FC = () => {
 
           <div className="flex space-x-4 mb-6">
             <div className="relative flex-grow">
-              <input 
+              <input
                 type="text"
                 placeholder="Search teams..."
                 value={searchTerm}
@@ -74,8 +76,8 @@ const TeamManagement: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredTeams?.map((team) => (
-              <div 
-                key={team._id} 
+              <div
+                key={team._id}
                 className="border rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start mb-3">
@@ -95,9 +97,9 @@ const TeamManagement: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <p className="text-gray-600 text-sm mb-4">{team.description}</p>
-                
+
                 <div className="flex items-center text-gray-500 text-sm">
                   <Users className="w-4 h-4 mr-1" />
                   {team.members.length} members
@@ -115,9 +117,9 @@ const TeamManagement: React.FC = () => {
       )}
 
       {isModalOpen && (
-        <TeamModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
+        <TeamModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
           team={selectedTeam}
         />
       )}
@@ -125,4 +127,4 @@ const TeamManagement: React.FC = () => {
   );
 };
 
-export default TeamManagement; 
+export default TeamManagement;

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch, RootState } from '@/store';
-import { createTeam, updateTeam, Team } from '@/store/slices/teamSlice';
-import { X } from 'lucide-react';
-import userService, { User } from '@/services/userService';
+import React, { useState, useEffect, Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/store";
+import { createTeam, updateTeam, Team } from "@/store/slices/teamSlice";
+import { X } from "lucide-react";
+import userService, { User } from "@/services/userService";
 
 interface TeamModalProps {
   isOpen: boolean;
@@ -21,11 +21,11 @@ interface TeamFormData {
 const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [users, setUsers] = useState<User[]>([]);
-  console.log(users, 'users');
+  console.log(users, "users");
   const [formData, setFormData] = useState<TeamFormData>({
-    name: '',
-    description: '',
-    members: []
+    name: "",
+    description: "",
+    members: [],
   });
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
       setFormData({
         name: team.name,
         description: team.description,
-        members: team.members.map(member => member._id)
+        members: team.members.map((member) => member._id),
       });
     }
   }, [team]);
@@ -51,13 +51,15 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
     e.preventDefault();
     try {
       if (team) {
-        await dispatch(updateTeam({ id: team._id, teamData: formData })).unwrap();
+        await dispatch(
+          updateTeam({ id: team._id, teamData: formData })
+        ).unwrap();
       } else {
         await dispatch(createTeam(formData)).unwrap();
       }
       onClose();
     } catch (error) {
-      console.error('Failed to save team:', error);
+      console.error("Failed to save team:", error);
     }
   };
 
@@ -90,7 +92,7 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <div className="flex justify-between items-center mb-4">
                   <Dialog.Title className="text-lg font-semibold">
-                    {team ? 'Edit Team' : 'Create New Team'}
+                    {team ? "Edit Team" : "Create New Team"}
                   </Dialog.Title>
                   <button
                     onClick={onClose}
@@ -108,7 +110,9 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
                     <input
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       required
                     />
@@ -120,7 +124,12 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
                     </label>
                     <textarea
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       rows={3}
                       required
@@ -134,13 +143,18 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
                     <select
                       multiple
                       value={formData.members}
-                      onChange={(e) => setFormData({
-                        ...formData,
-                        members: Array.from(e.target.selectedOptions, option => option.value)
-                      })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          members: Array.from(
+                            e.target.selectedOptions,
+                            (option) => option.value
+                          ),
+                        })
+                      }
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     >
-                      {users.map(user => (
+                      {users.map((user) => (
                         <option key={user._id} value={user._id}>
                           {user.name}
                         </option>
@@ -160,7 +174,7 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
                       type="submit"
                       className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
                     >
-                      {team ? 'Update Team' : 'Create Team'}
+                      {team ? "Update Team" : "Create Team"}
                     </button>
                   </div>
                 </form>
@@ -173,4 +187,4 @@ const TeamModal: React.FC<TeamModalProps> = ({ isOpen, onClose, team }) => {
   );
 };
 
-export default TeamModal; 
+export default TeamModal;
